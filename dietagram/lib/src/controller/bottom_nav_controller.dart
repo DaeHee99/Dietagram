@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dietagram/src/controller/upload_controller.dart';
 import 'package:dietagram/src/pages/upload.dart';
 import 'package:dietagram/src/components/message_popup.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,12 @@ class BottomNavController extends GetxController {
     var page = PageName.values[value];
     switch (page) {
       case PageName.UPLOAD:
-        Get.to(() => const Upload());
+        Get.to(
+          () => UploadPage(), 
+          binding: BindingsBuilder((){
+            Get.put(UploadController());
+          })
+        );
         break;
       case PageName.HOME:
       case PageName.SEARCH:
