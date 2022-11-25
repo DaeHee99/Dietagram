@@ -58,22 +58,33 @@ class UploadPage extends GetView<UploadController> {
 
   Widget _imagePreview() {
     var width = Get.width;
-    return Container(
-      width: width,
-      height: width,
-      child: Obx(
-        () => _photoWidget(
-          controller.selectedImage.value,
-          width.toInt(),
-          builder: (data) {
-            return Image.memory(
-              data,
-              fit: BoxFit.cover,
-            );
-          },
-        ),
-      ),
-    );
+    return Obx(() {
+      if (controller.imageList.length == 0){
+        return Container(
+          width: width,
+          height: width,
+          color: Color(0xff808080),
+          );
+      }
+      else{
+        return Container(
+          width: width,
+          height: width,
+          child: Obx(
+            () => _photoWidget(
+              controller.selectedImage.value,
+              width.toInt(),
+              builder: (data) {
+                return Image.memory(
+                  data,
+                  fit: BoxFit.cover,
+                );
+              },
+            ),
+          ),
+        );
+      }
+    });
   }
 
   Widget _header() {

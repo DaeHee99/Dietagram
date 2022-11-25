@@ -35,7 +35,7 @@ class UploadController extends GetxController {
         type: RequestType.image,
         filterOption: FilterOptionGroup(
           imageOption: const FilterOption(
-            sizeConstraint: SizeConstraint(minWidth: 0, maxHeight: 1024),
+            sizeConstraint: SizeConstraint(),
           ),
           orders: [const OrderOption(type: OrderOptionType.createDate, asc: false)],
         ),
@@ -46,7 +46,7 @@ class UploadController extends GetxController {
     }
   }
 
-  void _loadData() async {
+  void _loadData() {
     changeAlbum(albums.first);
   }
 
