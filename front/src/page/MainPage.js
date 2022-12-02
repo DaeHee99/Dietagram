@@ -10,7 +10,7 @@ import NearMeIcon from '@mui/icons-material/NearMe';
 
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+// import FavoriteIcon from '@mui/icons-material/Favorite';
 import Paper from '@mui/material/Paper';
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
@@ -21,6 +21,7 @@ import Avatar from '@mui/material/Avatar';
 import Home from './Home';
 import SearchPage from './SearchPage';
 import Upload from './Upload';
+import MyPage from './MyPage';
 
 function MainPage(props) {
     const [value, setValue] = useState(0);
@@ -44,7 +45,8 @@ function MainPage(props) {
             </Box>
             
             {value === 0 ? <Home/> :
-            value === 1 ? <SearchPage/> : <Upload /> 
+            value === 1 ? <SearchPage/> :
+            value === 2 ? <Upload /> : <MyPage /> 
             }
 
 
@@ -61,7 +63,7 @@ function MainPage(props) {
                     <BottomNavigationAction label="Home" icon={<HomeRoundedIcon />} />
                     <BottomNavigationAction label="Search" icon={<SearchRoundedIcon />} />
                     <BottomNavigationAction label="Upload" icon={<AddBoxOutlinedIcon />} />
-                    <BottomNavigationAction label="Active" icon={<FavoriteIcon />} />
+                    {/* <BottomNavigationAction label="Active" icon={<FavoriteIcon />} /> */}
                     <BottomNavigationAction icon={<Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />} />
                     </BottomNavigation>
                 </Paper>
