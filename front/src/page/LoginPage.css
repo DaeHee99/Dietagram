@@ -1,0 +1,30 @@
+body {
+    text-align: center;
+    background-color: rgb(250, 250, 250);
+  }
+  
+  #logo_img {
+    margin: 40px auto;
+    
+  }
+  
+  #logo_img > img {
+    width: 50%;
+  }
+  
+  .login {
+    width: 50%;
+    background-color: white;
+    border: 1px solid grey;
+    margin: 100px auto;
+  }
+  
+  .snsLogin {
+    width: 40%;
+    margin: auto 10px;
+  }
+  
+  #sign {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
