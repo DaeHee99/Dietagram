@@ -65,12 +65,18 @@ function Upload(props) {
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         if (activeStep === steps.length-1) {
-            frm.append("nutritionDTO", resultData);
+            // frm.append("nutritionDTO", resultData);
             frm.append("content", description);
-            axios.post('http://118.67.135.208:3000/upload', frm, {
+
+            const json = JSON.stringify(resultData);
+            const blob = new Blob([json], { type: "application/json" });
+            frm.append("nutritionDTO", blob);
+
+            console.log(JSON.stringify(resultData));
+            axios.post('http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/feed/post', frm, {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                'token' : 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaXNzIjoiRGlldGFncmFtIiwianRpIjoiMiIsImlhdCI6MTY3MDEzNzgwMCwiZXhwIjoxNjcwMjI0MjAwLCJ0eXBlIjoiYWNjZXNzIiwiZm9vIjpbXX0.cOGhw-E7rkSfrKA3CR7WV4bWeepjYYETRXuWKoEotZY'
+                'token' : localStorage.getItem("token")
             }
             })
             .then(function (response) {

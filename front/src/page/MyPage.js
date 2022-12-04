@@ -1,5 +1,5 @@
 import './MyPage.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import Avatar from '@mui/material/Avatar';
 import { deepPurple } from '@mui/material/colors';
@@ -10,7 +10,7 @@ import Tab from '@mui/material/Tab';
 import MyPost from './MyPost';
 import MyDiet from './MyDiet';
 import TextField from '@mui/material/TextField';
-
+import axios from 'axios';
 import Dialog from '@mui/material/Dialog';
 import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
@@ -28,14 +28,55 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function MyPage(props) {
     const [tab, setTab] = useState(0);
     const [open, setOpen] = React.useState(false);
+    const [newName, setNewName] = useState('');
+    const [newCalorie, setNewCalorie] = useState('');
+    const [newHeight, setNewHeight] = useState('');
+    const [newWeight, setNewWeight] = useState('');
+    const [userData, setUserData] = useState({
+        "id": 0,
+        "attributeId": "",
+        "nickname": "",
+        "calorie_goal": 0,
+        "token": "",
+        "weight": 0,
+        "height": 0,
+        "responseFeedDTO": [],
+        "followingList": [],
+        "followerList": []
+    });
 
     const handleTab = (event, newValue) => {
         setTab(newValue);
     };
 
-    const saveInfo = () => {
-        alert('저장 완료');
-        handleClose();
+    const saveInfo = () => {        
+        axios.post('http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/mypage/edit', {
+            "originName" : localStorage.getItem("nickname"),
+            "newName" : newName,
+            "weight" : newWeight,
+            "height" : newHeight,
+            "calorie_goal" : newCalorie
+        }, {
+        headers: {
+            'Content-Type': 'application/json',
+            'token' : localStorage.getItem("token")
+        }
+        })
+        .then(function (response) {
+            console.log(response);
+            alert('저장 완료');
+        })
+        .catch(function (error) {
+            console.log(error);
+            alert('실패');
+        })
+        .then(() => {
+            setNewName('');
+            setNewCalorie('');
+            setNewHeight('');
+            setNewWeight('');
+            handleClose();
+        })
     }
 
     const handleClickOpen = () => {
@@ -43,34 +84,84 @@ function MyPage(props) {
     };
     
     const handleClose = () => {
+        setNewName('');
+        setNewCalorie('');
+        setNewHeight('');
+        setNewWeight('');
         setOpen(false);
     };
+
+    const changeName = (event) => {
+        setNewName(event.target.value);
+    }
+
+    const changeCalorie = (event) => {
+        setNewCalorie(event.target.value);
+    }
+
+    const changeHeight = (event) => {
+        setNewHeight(event.target.value);
+    }
+
+    const changeWeight = (event) => {
+        setNewWeight(event.target.value);
+    }
+
+    useEffect(() => {
+        axios.get("http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/mypage", {
+            headers: {
+                'token' : localStorage.getItem("token")
+            }
+        })
+        .then(response => {
+            console.log(response);
+            setUserData(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+
+        // 일일 식단 분석 결과 데이터 가져오기
+
+        // axios.get("http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/mypage/calorie", {
+        //     headers: {
+        //         'token' : localStorage.getItem("token")
+        //     }
+        // })
+        // .then(response => {
+        //     console.log(response);
+        //     setUserData(response.data);
+        // }).catch(error => {
+        //     console.log(error);
+        // });
+    }, []);
 
     return (
         <div id='MyPage'>
             <div id='myTop'>
-                <span><b>닉네임</b></span>
+                <span><b>{userData.nickname}</b></span>
                 <MenuRoundedIcon fontSize='large'/>
             </div>
             <div id='MyFollow'>
                 <Avatar sx={{ bgcolor: deepPurple[500], width: 80, height: 80, marginTop: 2, fontSize: 50 }} aria-label="profile">
-                    이
+                    {userData.nickname[0]}
                 </Avatar>
                 <div className='MyPage_follow'>
-                    <b>15</b><br />
+                    <b>{userData.responseFeedDTO.length}</b><br />
                     Post
                 </div>
                 <div className='MyPage_follow'>
-                    <b>11</b><br />
+                    <b>{userData.followerList.length}</b><br />
                     Followers
                 </div>
                 <div className='MyPage_follow'>
-                    <b>3</b><br />
+                    <b>{userData.followingList.length}</b><br />
                     Following
                 </div>
             </div>
             <div id='profile_desc'>
-                안녕하세요. 소프트웨어공학 7조입니다.
+                안녕하세요. 저는 "{userData.nickname}" 입니다. <br />
+                제 일일 목표 칼로리는 {userData.calorie_goal}Kcal 입니다. <br /><br />
+                {`현재 신체 정보 - [키 : ${userData.height | '등록 안됨'} // 몸무게 : ${userData.weight | '등록 안됨'}]`}
             </div>
             
             <div id='edit'>
@@ -101,16 +192,16 @@ function MyPage(props) {
                     </AppBar>
                     <List sx={{width: '70%', margin: '30px auto'}}>
                         <ListItem>
-                            <TextField label="새로운 닉네임" variant="outlined" sx={{width: '80%', marginBottom: 1}}/>
+                            <TextField label="새로운 닉네임" value={newName} onChange={changeName} variant="outlined" sx={{width: '80%', marginBottom: 1}}/>
                         </ListItem>
                         <ListItem>
-                            <TextField label="새로운 일일 목표 칼로리" variant="outlined" sx={{width: '80%', marginBottom: 1}}/>
+                            <TextField label="새로운 일일 목표 칼로리" value={newCalorie} onChange={changeCalorie} variant="outlined" sx={{width: '80%', marginBottom: 1}}/>
                         </ListItem>
                         <ListItem>
-                            <TextField label="새로운 키" variant="outlined" sx={{width: '80%', marginBottom: 1}}/>
+                            <TextField label="새로운 키" value={newHeight} onChange={changeHeight} variant="outlined" sx={{width: '80%', marginBottom: 1}}/>
                         </ListItem>
                         <ListItem>
-                            <TextField label="새로운 몸무게" variant="outlined" sx={{width: '80%', marginBottom: 1}}/>
+                            <TextField label="새로운 몸무게" value={newWeight} onChange={changeWeight} variant="outlined" sx={{width: '80%', marginBottom: 1}}/>
                         </ListItem>
                     </List>
                 </Dialog>
@@ -123,7 +214,7 @@ function MyPage(props) {
             </Tabs>
             </Box>
             {tab === 0 ? 
-                <MyPost /> : 
+                <MyPost data={userData.responseFeedDTO}/> : 
                 <MyDiet />
             }
         </div>

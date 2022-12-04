@@ -23,9 +23,11 @@ import SearchPage from './SearchPage';
 import Upload from './Upload';
 import MyPage from './MyPage';
 
+
 function MainPage(props) {
-    const [value, setValue] = useState(0);
-    const ref = useRef(null);
+  console.log(props);
+  const [value, setValue] = useState(0);
+  const ref = useRef(null);
 
     return (
         <div className="MainPage">
@@ -63,13 +65,14 @@ function MainPage(props) {
                     <BottomNavigationAction label="Upload" icon={<FileUploadRoundedIcon />} />
                     {/* <BottomNavigationAction label="Active" icon={<FavoriteIcon />} /> */}
                     <BottomNavigationAction icon={<Avatar sx={{ bgcolor: deepPurple[500] }} aria-label="profile">
-                        R
+                        {localStorage.getItem("nickname")[0]}
                     </Avatar>} />
                     </BottomNavigation>
                 </Paper>
             </Box>
         </div>
     );
+
 }
 
 export default MainPage;

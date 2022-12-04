@@ -29,7 +29,7 @@ function SearchPage(props) {
 
   const inputHandler = (event) => {
     setSearch(event.target.value);
-  }
+  };
 
   const searchGo = () => {
     let frm = new FormData();
@@ -51,21 +51,24 @@ function SearchPage(props) {
 
   const follow_friend = (event) => {
     console.log(event.target.id);
-    console.log('dsadadsadas');
 
     let frm = new FormData();
     frm.append("targetId", event.target.id);
     axios.post('http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/userpage/follow', frm, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        'token' : 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaXNzIjoiRGlldGFncmFtIiwianRpIjoiMiIsImlhdCI6MTY3MDEzNzgwMCwiZXhwIjoxNjcwMjI0MjAwLCJ0eXBlIjoiYWNjZXNzIiwiZm9vIjpbXX0.cOGhw-E7rkSfrKA3CR7WV4bWeepjYYETRXuWKoEotZY'
+        'token' : localStorage.getItem("token")
       }
     })
     .then(function (response) {
-      setSearchResult(response.data);
+      console.log(response.data);
+      alert('팔로우 성공');
       setSearch('');
     })
     .catch(function (error) {
+      console.log(error);
+    })
+    .then(() => {
       setSearch('');
     });
   }

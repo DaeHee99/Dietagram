@@ -22,17 +22,17 @@ const REST_API_KEY_kakao = "aa6241f0d2d67478a59c2498796a248c";
 const REDIRECT_URI_kakao = "http://localhost:3000/logininfo";
 const KaKao_Rest_API = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY_kakao}&redirect_uri=${REDIRECT_URI_kakao}&response_type=code`;
 
-function LoginPage() {
-  const [email, setEmail] = useState("");
+function LoginPage(props) {
+  const [email, setEmail] = useState('');
   const [values, setValues] = useState({
-    password: "",
+    password: '',
     showPassword: false,
   });
   const [signup, setSignup] = useState(false);
 
   const handleClick = () => {
     setEmail('');
-    setValues({...values, password: ""})
+    setValues({...values, password: '' })
     setSignup(true);
   };
 

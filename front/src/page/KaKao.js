@@ -24,6 +24,7 @@ const ProfilePath = () => {
         .then((response) => {
           console.log(response);
           localStorage.setItem("token", response.data.token);
+          localStorage.setItem("nickname", response.data.nickname);
           navigate("/main");
         });
     } catch (err) {
