@@ -1,0 +1,13 @@
+#MyPost {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.post {
+    background-color: green;
+    width: 33%;
+    height: 200px;
+    margin-bottom: 3px;
+}

@@ -10,8 +10,9 @@ import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red, deepPurple } from '@mui/material/colors';
+import { deepPurple } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -30,18 +31,23 @@ const ExpandMore = styled((props) => {
   }));
 
 function Feed(props) {
-    const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [favorite, setFavorite] = useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
+  const favoriteClick = () => {
+    setFavorite(!favorite);
+  }
+
   return (
     <Card className='Feed' sx={{ maxWidth: 500, marginTop: 2 }}>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
+          <Avatar sx={{ bgcolor: deepPurple[500] }} aria-label="recipe">
+            이
           </Avatar>
         }
         action={
@@ -59,14 +65,13 @@ function Feed(props) {
       />
       <CardContent>
         <Typography id='like' variant="body2" color="text.secondary">
-          <b>좋아요 100개<br/>
-          이름</b><br/>
-          1일전
+          <b>설명설명설명</b><br/><br/>
+          22/11/11 10:30:17
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
+        <IconButton aria-label="add to favorites" onClick={favoriteClick}>
+          {favorite ? <FavoriteIcon /> : <FavoriteBorderRoundedIcon />}
         </IconButton>
         <IconButton aria-label="bookmark">
           <BookmarkIcon />
@@ -87,7 +92,7 @@ function Feed(props) {
         <CardContent>
             <CardHeader
                 avatar={
-                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                <Avatar sx={{ bgcolor: deepPurple[500] }} aria-label="recipe">
                     R
                 </Avatar>
                 }

@@ -7,7 +7,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import NearMeIcon from '@mui/icons-material/NearMe';
-
+import { deepPurple } from '@mui/material/colors';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 // import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -15,7 +15,7 @@ import Paper from '@mui/material/Paper';
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
+import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded';
 import Avatar from '@mui/material/Avatar';
 
 import Home from './Home';
@@ -49,8 +49,6 @@ function MainPage(props) {
             value === 2 ? <Upload /> : <MyPage /> 
             }
 
-
-
             <Box sx={{ pb: 7 }} ref={ref}>
                 <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
                     <BottomNavigation
@@ -62,9 +60,11 @@ function MainPage(props) {
                     >
                     <BottomNavigationAction label="Home" icon={<HomeRoundedIcon />} />
                     <BottomNavigationAction label="Search" icon={<SearchRoundedIcon />} />
-                    <BottomNavigationAction label="Upload" icon={<AddBoxOutlinedIcon />} />
+                    <BottomNavigationAction label="Upload" icon={<FileUploadRoundedIcon />} />
                     {/* <BottomNavigationAction label="Active" icon={<FavoriteIcon />} /> */}
-                    <BottomNavigationAction icon={<Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />} />
+                    <BottomNavigationAction icon={<Avatar sx={{ bgcolor: deepPurple[500] }} aria-label="profile">
+                        R
+                    </Avatar>} />
                     </BottomNavigation>
                 </Paper>
             </Box>

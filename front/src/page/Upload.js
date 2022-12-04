@@ -53,6 +53,8 @@ function Upload(props) {
     const [selectImg, setSelectImg] = useState(false);
     const [imgSrc, setImgSrc] = useState('');
     const [description, setDescription] = useState('');
+    const [frm] = useState(new FormData());
+    const [resultData, setResultData] = useState({});
 
     const handleDescription = (event) => {
         setDescription(event.target.value);
@@ -61,7 +63,23 @@ function Upload(props) {
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         if (activeStep === steps.length-1) {
-            console.log('upload done');
+            frm.append("nutritionDTO", resultData);
+            frm.append("content", description);
+            axios.post('http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/feed/post', frm, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'token' : 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaXNzIjoiRGlldGFncmFtIiwianRpIjoiMiIsImlhdCI6MTY3MDEzNzgwMCwiZXhwIjoxNjcwMjI0MjAwLCJ0eXBlIjoiYWNjZXNzIiwiZm9vIjpbXX0.cOGhw-E7rkSfrKA3CR7WV4bWeepjYYETRXuWKoEotZY'
+            }
+            })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+            .then(() => {
+                console.log('done');
+            })
         }
     };
 
@@ -89,7 +107,6 @@ function Upload(props) {
     }
 
     const sendData = () => {
-        var frm = new FormData();
         var photoFile = document.getElementById("photo");
         frm.append("image", photoFile.files[0]);
         axios.post('http://localhost:3080/upload', frm, {
@@ -99,25 +116,25 @@ function Upload(props) {
         })
         .then((response) => {
             console.log(response.data);
-            let resultData = response.data;
+            setResultData(response.data);
             rows = [];
             rows = [
-                createData('음식 이름', resultData['name']),
-                createData('중량(g)', resultData['weight_g']),
-                createData('에너지(kcal)', resultData['calorie_kcal']),
-                createData('탄수화물(g)', resultData['Carbohydrate_g']),
-                createData('당류(g)', resultData['sugars_g']),
-                createData('지방(g)', resultData['fat_g']),
-                createData('단백질(g)', resultData['protein_g']),
-                createData('칼슘(mg)', resultData['calcium_mg']),
-                createData('인(mg)', resultData['phosphorus_mg']),
-                createData('나트륨(mg)', resultData['sodium_mg']),
-                createData('칼륨(mg)', resultData['potassium_mg']),
-                createData('마그네슘(mg)', resultData['magnesium_mg']),
-                createData('철(mg)', resultData['iron_mg']),
-                createData('아연(mg)', resultData['zinc_mg']),
-                createData('콜레스테롤(mg)', resultData['cholesterol_mg']),
-                createData('트랜스지방(g)', resultData['transFat_g']),
+                createData('음식 이름', response.data['name']),
+                createData('중량(g)', response.data['weight_g']),
+                createData('에너지(kcal)', response.data['calorie_kcal']),
+                createData('탄수화물(g)', response.data['Carbohydrate_g']),
+                createData('당류(g)', response.data['sugars_g']),
+                createData('지방(g)', response.data['fat_g']),
+                createData('단백질(g)', response.data['protein_g']),
+                createData('칼슘(mg)', response.data['calcium_mg']),
+                createData('인(mg)', response.data['phosphorus_mg']),
+                createData('나트륨(mg)', response.data['sodium_mg']),
+                createData('칼륨(mg)', response.data['potassium_mg']),
+                createData('마그네슘(mg)', response.data['magnesium_mg']),
+                createData('철(mg)', response.data['iron_mg']),
+                createData('아연(mg)', response.data['zinc_mg']),
+                createData('콜레스테롤(mg)', response.data['cholesterol_mg']),
+                createData('트랜스지방(g)', response.data['transFat_g']),
             ]
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
         })
