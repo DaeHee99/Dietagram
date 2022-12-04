@@ -110,7 +110,7 @@ function SearchPage(props) {
                     >
                       <ListItemAvatar>
                         <Avatar sx={{ bgcolor: deepPurple[500] }} aria-label="recipe">
-                          {item.name[0]}
+                          {item.nickname[0]}
                         </Avatar>
                       </ListItemAvatar>
                       <ListItemText

@@ -5,8 +5,8 @@ import Button from '@mui/material/Button';
 import Kakao from '../images/kakao_login.png';
 import Naver from '../images/naver_logo.png';
 import Link from '@mui/material/Link';
-import { useState, forwardRef, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
+
 import IconButton from '@mui/material/IconButton';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -15,34 +15,24 @@ import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+import Alert from '@mui/material/Alert';
 
-// const { naver } = window;
+const REST_API_KEY_kakao = "aa6241f0d2d67478a59c2498796a248c";
+// const Testing_URI = "http://localhost:3000"; //http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080
+const REDIRECT_URI_kakao = "http://localhost:3000/logininfo";
+const KaKao_Rest_API = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY_kakao}&redirect_uri=${REDIRECT_URI_kakao}&response_type=code`;
 
-// const naverLogin = new naver.LoginWithNaverId({
-//   clientId: "bEKqF3MXWfDJgN9XNUKj",
-//   callbackUrl: "http://localhost:3000",
-//   isPopup: true,
-//   loginButton: {
-//     color: "green",
-//     type: 3,
-//     height: 50,
-//   },
-// });
-
-const Alert = forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
-function LoginPage(props) {
-  const [email, setEmail] = useState('');
+function LoginPage() {
+  const [email, setEmail] = useState("");
   const [values, setValues] = useState({
-    password: '',
+    password: "",
     showPassword: false,
   });
   const [signup, setSignup] = useState(false);
 
   const handleClick = () => {
+    setEmail('');
+    setValues({...values, password: ""})
     setSignup(true);
   };
 
@@ -72,31 +62,6 @@ function LoginPage(props) {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-
-  const loginClick = () => {
-    console.log(email);
-    console.log(values.password);
-    props.loginHangler(true);
-  }
-
-  const NaverLogin = () => {
-    // window.open('http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/kakao')
-    // axios.get('/api/oauth2/authorization/kakao')
-    // .then(function (response) {
-    //   console.log(response);  
-    // }).catch(function (error) {
-    //   console.log(error);
-    // })
-  }
-
-  const KakaoLogin = () => {
-    
-  }
-
-  // useEffect(() => {
-  //   naverLogin.init();
-  //   console.log("init!");
-  // }, []);
 
   return (
     <div className="LoginPage">
@@ -128,13 +93,15 @@ function LoginPage(props) {
               label="Password"
             />
           </FormControl>
-          <Button id='loginButton' variant="contained" sx={{width: '80%'}} onClick={loginClick}>로그인</Button>
+          <Button id='loginButton' variant="contained" sx={{width: '80%'}} onClick={handleClick}>로그인</Button>
           <br /><br />
           <hr />
           <br />
           <div>
-            <Button className='snsLogin' type="button" onClick={NaverLogin}><img src={Naver} alt='naver'/></Button>
-            <Button className='snsLogin' type="button" onClick={KakaoLogin}><img src={Kakao} alt='kakao'/></Button>
+            <img className="snsLogin" src={Naver} alt="naver" />
+            <a href={KaKao_Rest_API}>
+              <img className="snsLogin" src={Kakao} alt="kakao" />
+            </a>
           </div>
           <br />
         </div>
