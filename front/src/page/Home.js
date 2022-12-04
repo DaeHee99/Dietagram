@@ -7,7 +7,7 @@ function Home(props) {
     const [feedList, setFeedList] = useState([]);
 
     const getFeedList = () => {
-        axios.get(`http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/mainfeedlist`, {
+        axios.get(`http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/feed/mainfeedlist`, {
             headers: {
                 'token' : 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaXNzIjoiRGlldGFncmFtIiwianRpIjoiMiIsImlhdCI6MTY3MDEzNzgwMCwiZXhwIjoxNjcwMjI0MjAwLCJ0eXBlIjoiYWNjZXNzIiwiZm9vIjpbXX0.cOGhw-E7rkSfrKA3CR7WV4bWeepjYYETRXuWKoEotZY'
             }

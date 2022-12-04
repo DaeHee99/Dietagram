@@ -65,7 +65,7 @@ function Upload(props) {
         if (activeStep === steps.length-1) {
             frm.append("nutritionDTO", resultData);
             frm.append("content", description);
-            axios.post('http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/feed/post', frm, {
+            axios.post('http://118.67.135.208:3000/upload', frm, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'token' : 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaXNzIjoiRGlldGFncmFtIiwianRpIjoiMiIsImlhdCI6MTY3MDEzNzgwMCwiZXhwIjoxNjcwMjI0MjAwLCJ0eXBlIjoiYWNjZXNzIiwiZm9vIjpbXX0.cOGhw-E7rkSfrKA3CR7WV4bWeepjYYETRXuWKoEotZY'
@@ -109,7 +109,7 @@ function Upload(props) {
     const sendData = () => {
         var photoFile = document.getElementById("photo");
         frm.append("image", photoFile.files[0]);
-        axios.post('http://localhost:3080/upload', frm, {
+        axios.post('http://118.67.135.208:3000/upload', frm, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
