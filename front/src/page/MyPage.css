@@ -1,7 +1,8 @@
 #MyPage {
     margin-top: 85px;
     min-width: 300px;
-    width: 50%;
+    max-width: 600px;
+    width: 60%;
     margin: 85px auto;
     margin-bottom: 30px;
     padding: 0 10px;
@@ -36,4 +37,9 @@
 
 #edit {
     margin: 40px 0;
+}
+
+#profileForm {
+    margin-bottom: 30px;
+    border: 1px solid blue;
 }

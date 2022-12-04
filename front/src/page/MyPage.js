@@ -9,13 +9,24 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import MyPost from './MyPost';
 import MyDiet from './MyDiet';
+import TextField from '@mui/material/TextField';
 
 function MyPage(props) {
     const [tab, setTab] = useState(0);
+    const [profileForm, setProfileForm] = useState('none');
 
     const handleTab = (event, newValue) => {
         setTab(newValue);
     };
+
+    const editProfile = () => {
+        setProfileForm('block');
+    }
+
+    const editGO = () => {
+        setProfileForm('none');
+        alert('수정 완료!!');
+    }
 
     return (
         <div id='MyPage'>
@@ -25,7 +36,7 @@ function MyPage(props) {
             </div>
             <div id='MyFollow'>
                 <Avatar sx={{ bgcolor: deepPurple[500], width: 80, height: 80, marginTop: 2, fontSize: 50 }} aria-label="profile">
-                    R
+                    이
                 </Avatar>
                 <div className='MyPage_follow'>
                     <b>15</b><br />
@@ -44,7 +55,23 @@ function MyPage(props) {
                 안녕하세요. 소프트웨어공학 7조입니다.
             </div>
             <div id='edit'>
-                <Button variant="outlined" sx={{width: '100%'}}>프로필 수정</Button>
+                <Button onClick={editProfile} variant="outlined" sx={{width: '100%'}}>프로필 수정</Button>
+            </div>
+            <div id='profileForm' style={{display: profileForm}}>
+                <Box
+                    component="form"
+                    sx={{
+                        '& > :not(style)': { m: 1, width: '25ch' },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                    >
+                    <TextField id="modify_name" label="새로운 닉네임" variant="outlined" />
+                    <TextField id="modify_calorie" label="새로운 일일 목표 칼로리" variant="outlined" />
+                    {/* <TextField id="standard-basic" label="Standard" variant="standard" /> */}
+                </Box>
+                <br />
+                <Button onClick={editGO} variant="contained" sx={{width: '100%'}}>수정하기</Button>
             </div>
             <Box sx={{ width: '100%', bgcolor: 'background.paper', marginBottom: 1 }}>
             <Tabs value={tab} onChange={handleTab} centered>

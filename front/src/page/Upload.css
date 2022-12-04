@@ -18,3 +18,7 @@
 #Upload form {
     margin-bottom: 20px;
 }
+
+#foodUploadForm .MuiBox-root span {
+    margin: 0 auto;
+}

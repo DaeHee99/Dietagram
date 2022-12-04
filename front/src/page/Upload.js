@@ -21,6 +21,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -53,8 +54,9 @@ function Upload(props) {
     const [selectImg, setSelectImg] = useState(false);
     const [imgSrc, setImgSrc] = useState('');
     const [description, setDescription] = useState('');
-    const [frm] = useState(new FormData());
+    const [frm, setFrm] = useState(new FormData());
     const [resultData, setResultData] = useState({});
+    const [loadingIcon, setLoadingIcon] = useState('none');
 
     const handleDescription = (event) => {
         setDescription(event.target.value);
@@ -86,6 +88,7 @@ function Upload(props) {
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
         setSelectImg(false);
+        setFrm(new FormData());
     };
 
     const handleReset = () => {
@@ -107,6 +110,8 @@ function Upload(props) {
     }
 
     const sendData = () => {
+        setLoadingIcon('flex');
+        setSelectImg(false);
         var photoFile = document.getElementById("photo");
         frm.append("image", photoFile.files[0]);
         axios.post('http://118.67.135.208:3000/upload', frm, {
@@ -115,6 +120,7 @@ function Upload(props) {
         }
         })
         .then((response) => {
+            setLoadingIcon('none');
             console.log(response.data);
             setResultData(response.data);
             rows = [];
@@ -146,12 +152,17 @@ function Upload(props) {
     const steps = [
         {
           label: '음식 사진을 업로드해주세요.',
-          content: <div><form>
+          content: <div><form id='foodUploadForm'>
                         <IconButton color="primary" aria-label="upload picture" component="label">
                             <input id='photo' hidden type="file" name="image" onChange={setImage} />
                             <PhotoCamera />
                         </IconButton>
-                        <div id="image_container"></div><br /><br /><br />
+                        <div id="image_container"></div><br />
+
+                        <Box sx={{ display: loadingIcon}}>
+                            <CircularProgress />
+                        </Box><br />
+
                         <Button variant="contained" component="label" disabled={!selectImg}>
                             예측하기
                             <button hidden type="button" onClick={sendData}></button>
