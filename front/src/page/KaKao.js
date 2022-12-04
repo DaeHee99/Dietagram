@@ -21,9 +21,9 @@ const ProfilePath = () => {
             nickname: data.properties.nickname,
           }
         )
-        .then((data) => {
-          console.log("성공", data);
-          localStorage.setItem("token", data.token);
+        .then((response) => {
+          console.log(response);
+          localStorage.setItem("token", response.data.token);
           navigate("/main");
         });
     } catch (err) {

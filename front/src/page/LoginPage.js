@@ -1,5 +1,5 @@
 import "./LoginPage.css";
-import Logo from "../images/logo.png";
+import Logo from "../images/logo_black.png";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Kakao from "../images/kakao_login.png";
