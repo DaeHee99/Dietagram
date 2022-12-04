@@ -1,0 +1,45 @@
+#MyPage {
+    margin-top: 85px;
+    min-width: 300px;
+    max-width: 600px;
+    width: 60%;
+    margin: 85px auto;
+    margin-bottom: 30px;
+    padding: 0 10px;
+}
+
+#myTop {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 25px;
+}
+
+.MyPage_follow {
+    font-size: 15px;
+}
+
+.MyPage_follow b{
+    font-size: 25px;
+}
+
+#MyFollow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items:center;
+}
+
+#profile_desc {
+    margin: 15px 0;
+    text-align: left;
+}
+
+#edit {
+    margin: 40px 0;
+}
+
+#profileForm {
+    margin-bottom: 30px;
+    border: 1px solid blue;
+}
