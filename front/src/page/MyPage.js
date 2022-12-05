@@ -27,11 +27,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 function MyPage(props) {
     const [tab, setTab] = useState(0);
+    const [refresh, setRefresh] = useState(false);
     const [open, setOpen] = React.useState(false);
     const [newName, setNewName] = useState('');
     const [newCalorie, setNewCalorie] = useState('');
     const [newHeight, setNewHeight] = useState('');
     const [newWeight, setNewWeight] = useState('');
+    const [dailyData, setDailyData] = useState([]);
     const [userData, setUserData] = useState({
         "id": 0,
         "attributeId": "",
@@ -107,6 +109,10 @@ function MyPage(props) {
         setNewWeight(event.target.value);
     }
 
+    const refreshMyPage = () => {
+        setRefresh(!refresh);
+    }
+
     useEffect(() => {
         axios.get("http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/mypage", {
             headers: {
@@ -121,19 +127,18 @@ function MyPage(props) {
         });
 
         // 일일 식단 분석 결과 데이터 가져오기
-
-        // axios.get("http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/mypage/calorie", {
-        //     headers: {
-        //         'token' : localStorage.getItem("token")
-        //     }
-        // })
-        // .then(response => {
-        //     console.log(response);
-        //     setUserData(response.data);
-        // }).catch(error => {
-        //     console.log(error);
-        // });
-    }, []);
+        axios.get("http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/mypage/calorie", {
+            headers: {
+                'token' : localStorage.getItem("token")
+            }
+        })
+        .then(response => {
+            console.log(response);
+            setDailyData(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+    }, [refresh]);
 
     return (
         <div id='MyPage'>
@@ -206,6 +211,9 @@ function MyPage(props) {
                     </List>
                 </Dialog>
             </div>
+            <div style={{display: 'none'}}>
+                {refresh}
+            </div>
             
             <Box sx={{ width: '100%', bgcolor: 'background.paper', marginBottom: 1 }}>
             <Tabs value={tab} onChange={handleTab} centered>
@@ -214,8 +222,8 @@ function MyPage(props) {
             </Tabs>
             </Box>
             {tab === 0 ? 
-                <MyPost data={userData.responseFeedDTO}/> : 
-                <MyDiet />
+                <MyPost data={userData.responseFeedDTO} refreshMyPage={refreshMyPage}/> : 
+                <MyDiet data={dailyData} calorie_goal={userData.calorie_goal}/>
             }
         </div>
     );

@@ -1,5 +1,5 @@
 import './SearchPage.css';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
 import Divider from '@mui/material/Divider';
@@ -14,18 +14,36 @@ import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
-// import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import { deepPurple } from '@mui/material/colors';
 
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const Demo = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   width: '100%'
 }));
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 function SearchPage(props) {
   const [search, setSearch] = useState('');
   const [searchResult, setSearchResult] = useState([]);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   const inputHandler = (event) => {
     setSearch(event.target.value);
@@ -62,7 +80,7 @@ function SearchPage(props) {
     })
     .then(function (response) {
       console.log(response.data);
-      alert('팔로우 성공');
+      handleClick();
       setSearch('');
     })
     .catch(function (error) {
@@ -126,6 +144,11 @@ function SearchPage(props) {
             </List>
           </Demo>
         </div>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+            팔로우 성공!
+          </Alert>
+        </Snackbar>
       </div>
     );
 }

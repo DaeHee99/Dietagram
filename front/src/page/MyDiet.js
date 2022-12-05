@@ -8,14 +8,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-const rows = [
-    ['01/01', 1159, '실패'],
-    ['01/02', 1237, '성공'],
-    ['01/03', 1262, '성공'],
-    ['01/04', 1305, '실패'],
-    ['01/05', 1356, '성공'],
-];
-
 function MyDiet(props) {
     return (
         <div id='MyDiet'>
@@ -29,11 +21,11 @@ function MyDiet(props) {
                 </TableRow>
                 </TableHead>
                 <TableBody>
-                {rows.map((row) => (
-                    <TableRow key={row[0]}>
-                        <TableCell align="center">{row[0]}</TableCell>
-                        <TableCell align="center">{row[1]}</TableCell>
-                        <TableCell align="center">{row[2]}</TableCell>
+                {props.data.map((item) => (
+                    <TableRow key={item.date}>
+                        <TableCell align="center">{item.date.slice(0,10)}</TableCell>
+                        <TableCell align="center">{item.calorieSum}</TableCell>
+                        <TableCell align="center">{item.calorieSum > props.calorie_goal ? "초과" : (item.calorieSum < props.calorie_goal ? "미달" : "성공")}</TableCell>
                     </TableRow>
                 ))}
                 </TableBody>
