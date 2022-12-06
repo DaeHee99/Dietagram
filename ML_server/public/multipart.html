@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Dietagram</h1>
+    <p>음식 종류 및 양 예측 API</p>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" onchange="setImage(event)">
+        <button type="submit">예측하기</button>
+    </form>
+
+    <div id="image_container" style="margin-top: 20px"></div>
+
+    <script>
+    function setImage(event) {
+        let reader = new FileReader();
+
+        reader.onload = function(event) {
+            let img = document.createElement("img");
+            img.setAttribute("src", event.target.result);
+            img.style.width = '200px';
+            document.querySelector("div#image_container").appendChild(img);
+        };
+
+        reader.readAsDataURL(event.target.files[0]);
+    }
+    </script>
+</body>
+</html>
