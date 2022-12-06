@@ -1,6 +1,5 @@
 import './MyPost.css';
-
-import * as React from 'react';
+import React, {useState} from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -9,13 +8,10 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import axios from 'axios';
-import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import Avatar from '@mui/material/Avatar';
 import { deepPurple } from '@mui/material/colors';
-
 import Paper from '@mui/material/Paper';
-
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -23,6 +19,14 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Comment from './Comment';
+import TextField from '@mui/material/TextField';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -66,7 +70,12 @@ function MyPostDetail(props) {
         ['아연(mg)', props.item.responseFeedImageDTO['zinc_mg']],
         ['콜레스테롤(mg)', props.item.responseFeedImageDTO['cholesterol_mg']],
         ['트랜스지방(g)', props.item.responseFeedImageDTO['transFat_g']]
-    ]); 
+    ]);
+    const [comment, setComment] = useState('');
+    const [openCommentDeleteOK, setOpenCommentDeleteOK] = React.useState(false);
+    const [openCommentDeleteNO, setOpenCommentDeleteNO] = React.useState(false);
+    const [openComment, setOpenComment] = React.useState(false);
+
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -76,6 +85,65 @@ function MyPostDetail(props) {
         setOpen(false);
     };
 
+    const handleClickCommentDeleteOK = () => {
+        setOpenCommentDeleteOK(true);
+    };
+
+    const handleCloseCommentDeleteOK = (event, reason) => {
+        if (reason === 'clickaway') {
+        return;
+        }
+
+        setOpenCommentDeleteOK(false);
+    };
+
+    const handleClickCommentDeleteNO = () => {
+        setOpenCommentDeleteNO(true);
+    };
+
+    const handleCloseCommentDeleteNO = (event, reason) => {
+        if (reason === 'clickaway') {
+        return;
+        }
+
+        setOpenCommentDeleteNO(false);
+    };
+
+    const handleClickComment = () => {
+        setOpenComment(true);
+    };
+
+    const handleCloseComment = (event, reason) => {
+        if (reason === 'clickaway') {
+        return;
+        }
+
+        setOpenComment(false);
+    };
+
+    const commentHandler = (event) => {
+        setComment(event.target.value);
+    }
+
+    const uploadComment = () => {
+        axios.post(`http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/feed/${props.item.id}/comment`, {comment: comment}, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'token' : localStorage.getItem("token")
+        }
+        })
+        .then(function (response) {
+            handleClickComment();
+            props.refreshMyPage();
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+        .then(() => {
+            setComment('');
+        })
+    }
+
     const handleDelete = (event) => {
         axios.delete(`http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/feed/${event.target.id}`, {
             headers: {
@@ -83,14 +151,12 @@ function MyPostDetail(props) {
             }
         })
         .then(response => {
-            console.log(response);
             alert('삭제 완료');
             props.refreshMyPage();
             setOpen(false);
         }).catch(error => {
             console.log(error);
         });
-        console.log(event.target.id);
     };
 
 
@@ -116,16 +182,29 @@ function MyPostDetail(props) {
                         {props.item.content}<br /><br />
 
                         <CardContent sx={{width: '70%', margin: '0 auto'}}>
-                            <CardHeader
-                                avatar={
-                                <Avatar sx={{ bgcolor: deepPurple[500] }} aria-label="recipe">
-                                    이
-                                </Avatar>
-                                }
-                                title="이름"
-                                subheader="댓글댓글댓글1"
-                            />
+                        {
+                            props.item.responseFeedCommentDTOList.map(item => {
+                                return(
+                                    <Comment key={item.id} item={item} refreshHome={props.refreshMyPage} commentDeleteOK={handleClickCommentDeleteOK} commentDeleteNO={handleClickCommentDeleteNO}/>
+                                );
+                            })
+                        }
                         </ CardContent>
+                        <div style={{width: "95%", margin: "0 auto", marginBottom: "20px",display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
+                        <Avatar sx={{ bgcolor: deepPurple[500], margin: "auto 0" }} aria-label="recipe">
+                            {localStorage.getItem("nickname")[0]}
+                        </Avatar>
+                        <TextField
+                            id="outlined-multiline-flexible"
+                            label="댓글작성"
+                            multiline
+                            maxRows={4}
+                            value={comment}
+                            onChange={commentHandler}
+                            style={{width: "60%"}}
+                        />
+                        <Button variant="contained" onClick={uploadComment}>등록</Button>
+                        </div>
                         
                         <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 300 }} aria-label="customized table">
@@ -158,6 +237,21 @@ function MyPostDetail(props) {
                 <Button onClick={handleClose}>닫기</Button>
             </DialogActions>
             </Dialog>
+            <Snackbar open={openComment} autoHideDuration={6000} onClose={handleCloseComment}>
+                <Alert onClose={handleCloseComment} severity="success" sx={{ width: '100%' }}>
+                댓글 작성 성공!
+                </Alert>
+            </Snackbar>
+            <Snackbar open={openCommentDeleteOK} autoHideDuration={6000} onClose={handleCloseCommentDeleteOK}>
+                <Alert onClose={handleCloseCommentDeleteOK} severity="success" sx={{ width: '100%' }}>
+                댓글 삭제 완료!
+                </Alert>
+            </Snackbar>
+            <Snackbar open={openCommentDeleteNO} autoHideDuration={6000} onClose={handleCloseCommentDeleteNO}>
+                <Alert onClose={handleCloseCommentDeleteNO} severity="error" sx={{ width: '100%' }}>
+                댓글 삭제 실패.. 본인의 댓글만 삭제할 수 있습니다.
+                </Alert>
+            </Snackbar>
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import './Feed.css';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -17,6 +17,16 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import axios from 'axios';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import Comment from './Comment';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -32,6 +42,50 @@ const ExpandMore = styled((props) => {
 function Feed(props) {
   const [expanded, setExpanded] = useState(false);
   const [favorite, setFavorite] = useState(false);
+  const [comment, setComment] = useState('');
+  const [open, setOpen] = React.useState(false);
+  const [openCommentDeleteOK, setOpenCommentDeleteOK] = React.useState(false);
+  const [openCommentDeleteNO, setOpenCommentDeleteNO] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const handleClickCommentDeleteOK = () => {
+    setOpenCommentDeleteOK(true);
+  };
+
+  const handleCloseCommentDeleteOK = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenCommentDeleteOK(false);
+  };
+
+  const handleClickCommentDeleteNO = () => {
+    setOpenCommentDeleteNO(true);
+  };
+
+  const handleCloseCommentDeleteNO = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenCommentDeleteNO(false);
+  };
+
+  const commentHandler = (event) => {
+    setComment(event.target.value);
+  }
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -39,6 +93,25 @@ function Feed(props) {
 
   const favoriteClick = () => {
     setFavorite(!favorite);
+  }
+
+  const uploadComment = () => {
+    axios.post(`http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/feed/${props.feedData.id}/comment`, {comment: comment}, {
+      headers: {
+          'Content-Type': 'multipart/form-data',
+          'token' : localStorage.getItem("token")
+      }
+    })
+    .then(function (response) {
+      handleClick();
+      props.refreshHome();
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+    .then(() => {
+      setComment('');
+    })
   }
 
   return (
@@ -89,58 +162,45 @@ function Feed(props) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-            <CardHeader
-                avatar={
-                <Avatar sx={{ bgcolor: deepPurple[500] }} aria-label="recipe">
-                    R
-                </Avatar>
-                }
-                action={
-                <IconButton aria-label="settings">
-                    <MoreVertIcon />
-                </IconButton>
-                }
-                title="이름"
-                subheader="댓글1"
-            />
-            <CardHeader
-                avatar={
-                <Avatar sx={{ bgcolor: deepPurple[500] }}>AB</Avatar>
-                }
-                action={
-                <IconButton aria-label="settings">
-                    <MoreVertIcon />
-                </IconButton>
-                }
-                title="이름"
-                subheader="댓글2"
-            />
-            <CardHeader
-                avatar={
-                <Avatar sx={{ bgcolor: deepPurple[500] }}>AB</Avatar>
-                }
-                action={
-                <IconButton aria-label="settings">
-                    <MoreVertIcon />
-                </IconButton>
-                }
-                title="이름"
-                subheader="댓글3"
-            />
-            <CardHeader
-                avatar={
-                <Avatar sx={{ bgcolor: deepPurple[500] }}>AB</Avatar>
-                }
-                action={
-                <IconButton aria-label="settings">
-                    <MoreVertIcon />
-                </IconButton>
-                }
-                title="이름"
-                subheader="댓글4"
-            />
+          {
+            props.feedData.responseFeedCommentDTOList.map(item => {
+              return(
+                <Comment key={item.id} item={item} refreshHome={props.refreshHome} commentDeleteOK={handleClickCommentDeleteOK} commentDeleteNO={handleClickCommentDeleteNO}/>
+              );
+            })
+          }
         </CardContent>
+        <div style={{width: "95%", margin: "0 auto", marginBottom: "20px",display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
+          <Avatar sx={{ bgcolor: deepPurple[500], margin: "auto 0" }} aria-label="recipe">
+            {localStorage.getItem("nickname")[0]}
+          </Avatar>
+          <TextField
+            id="outlined-multiline-flexible"
+            label="댓글작성"
+            multiline
+            maxRows={4}
+            value={comment}
+            onChange={commentHandler}
+            style={{width: "60%"}}
+          />
+          <Button variant="contained" onClick={uploadComment}>등록</Button>
+        </div>
       </Collapse>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          댓글 작성 성공!
+        </Alert>
+      </Snackbar>
+      <Snackbar open={openCommentDeleteOK} autoHideDuration={6000} onClose={handleCloseCommentDeleteOK}>
+        <Alert onClose={handleCloseCommentDeleteOK} severity="success" sx={{ width: '100%' }}>
+          댓글 삭제 완료!
+        </Alert>
+      </Snackbar>
+      <Snackbar open={openCommentDeleteNO} autoHideDuration={6000} onClose={handleCloseCommentDeleteNO}>
+        <Alert onClose={handleCloseCommentDeleteNO} severity="error" sx={{ width: '100%' }}>
+          댓글 삭제 실패.. 본인의 댓글만 삭제할 수 있습니다.
+        </Alert>
+      </Snackbar>
     </Card>
   );
 }

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function Home(props) {
+    const [refresh, setRefresh] = useState(false);
     const [feedList, setFeedList] = useState([]);
 
     const getFeedList = () => {
@@ -20,24 +21,26 @@ function Home(props) {
             console.log(error);
         })
     }
-    
+
+    const refreshHome = () => {
+        setRefresh(!refresh);
+    }
+
     useEffect(() => {
         getFeedList();
-    }, []);
+    }, [refresh]);
 
     return (
         <div id='Home'>
             {   
-                //작성자 이름, 음식 사진, 피드 설명, 날짜, 댓글 리스트(작성자 이름, 댓글 내용)
-
                 feedList.map(item => {
-                    return <Feed key={item.id} feedData={item}/>;
+                    return <Feed key={item.id} feedData={item} refreshHome={refreshHome}/>;
                 })
-
-                // [1,2,3,4,5].map((item, i) => {
-                //     return <Feed key={i} feedData={item}/>;
-                // })
             }
+
+            <div style={{display: 'none'}}>
+                {refresh}
+            </div>
         </div>
     );
 }
