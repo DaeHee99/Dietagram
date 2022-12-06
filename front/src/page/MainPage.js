@@ -25,7 +25,6 @@ import MyPage from './MyPage';
 
 
 function MainPage(props) {
-  console.log(props);
   const [value, setValue] = useState(0);
   const ref = useRef(null);
 

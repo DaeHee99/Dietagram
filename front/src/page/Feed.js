@@ -16,7 +16,6 @@ import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import FoodImage from '../images/food.jpg';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 const ExpandMore = styled((props) => {
@@ -47,7 +46,7 @@ function Feed(props) {
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: deepPurple[500] }} aria-label="recipe">
-            이
+            {props.feedData.nickname[0]}
           </Avatar>
         }
         action={
@@ -55,17 +54,17 @@ function Feed(props) {
             <MoreVertIcon />
           </IconButton>
         }
-        title="이름"
+        title={`${props.feedData.responseFeedImageDTO.name}`}
       />
       <CardMedia
         component="img"
         height="300"
-        image={FoodImage}
+        image={props.feedData.responseFeedImageDTO.imageUrl}
         alt="Paella dish"
       />
       <CardContent>
         <Typography id='like' variant="body2" color="text.secondary">
-          <b>설명설명설명</b><br/><br/>
+          <b>{props.feedData.content}</b><br/><br/>
           22/11/11 10:30:17
         </Typography>
       </CardContent>

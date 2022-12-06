@@ -14,12 +14,10 @@ function Home(props) {
         })
         .then(res => {
             setFeedList(res.data);
+            console.log('followFeed', res.data);
         })
         .catch(error => {
             console.log(error);
-        })
-        .then(() => {
-            console.log(feedList);
         })
     }
     
@@ -32,13 +30,13 @@ function Home(props) {
             {   
                 //작성자 이름, 음식 사진, 피드 설명, 날짜, 댓글 리스트(작성자 이름, 댓글 내용)
 
-                // feedList.map((item, i) => {
+                feedList.map(item => {
+                    return <Feed key={item.id} feedData={item}/>;
+                })
+
+                // [1,2,3,4,5].map((item, i) => {
                 //     return <Feed key={i} feedData={item}/>;
                 // })
-
-                [1,2,3,4,5].map((item, i) => {
-                    return <Feed key={i} feedData={item}/>;
-                })
             }
         </div>
     );
