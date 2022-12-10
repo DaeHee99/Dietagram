@@ -21,6 +21,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -53,6 +54,9 @@ function Upload(props) {
     const [selectImg, setSelectImg] = useState(false);
     const [imgSrc, setImgSrc] = useState('');
     const [description, setDescription] = useState('');
+    const [frm, setFrm] = useState(new FormData());
+    const [resultData, setResultData] = useState({});
+    const [loadingIcon, setLoadingIcon] = useState('none');
 
     const handleDescription = (event) => {
         setDescription(event.target.value);
@@ -61,13 +65,36 @@ function Upload(props) {
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         if (activeStep === steps.length-1) {
-            console.log('upload done');
+            // frm.append("nutritionDTO", resultData);
+            frm.append("content", description);
+
+            const json = JSON.stringify(resultData);
+            const blob = new Blob([json], { type: "application/json" });
+            frm.append("nutritionDTO", blob);
+
+            console.log(JSON.stringify(resultData));
+            axios.post('http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/feed/post', frm, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'token' : localStorage.getItem("token")
+            }
+            })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+            .then(() => {
+                console.log('done');
+            })
         }
     };
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
         setSelectImg(false);
+        setFrm(new FormData());
     };
 
     const handleReset = () => {
@@ -89,35 +116,37 @@ function Upload(props) {
     }
 
     const sendData = () => {
-        var frm = new FormData();
+        setLoadingIcon('flex');
+        setSelectImg(false);
         var photoFile = document.getElementById("photo");
         frm.append("image", photoFile.files[0]);
-        axios.post('http://localhost:3080/upload', frm, {
+        axios.post('http://118.67.135.208:3000/upload', frm, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
         })
         .then((response) => {
+            setLoadingIcon('none');
             console.log(response.data);
-            let resultData = response.data;
+            setResultData(response.data);
             rows = [];
             rows = [
-                createData('음식 이름', resultData['name']),
-                createData('중량(g)', resultData['weight_g']),
-                createData('에너지(kcal)', resultData['calorie_kcal']),
-                createData('탄수화물(g)', resultData['Carbohydrate_g']),
-                createData('당류(g)', resultData['sugars_g']),
-                createData('지방(g)', resultData['fat_g']),
-                createData('단백질(g)', resultData['protein_g']),
-                createData('칼슘(mg)', resultData['calcium_mg']),
-                createData('인(mg)', resultData['phosphorus_mg']),
-                createData('나트륨(mg)', resultData['sodium_mg']),
-                createData('칼륨(mg)', resultData['potassium_mg']),
-                createData('마그네슘(mg)', resultData['magnesium_mg']),
-                createData('철(mg)', resultData['iron_mg']),
-                createData('아연(mg)', resultData['zinc_mg']),
-                createData('콜레스테롤(mg)', resultData['cholesterol_mg']),
-                createData('트랜스지방(g)', resultData['transFat_g']),
+                createData('음식 이름', response.data['name']),
+                createData('중량(g)', response.data['weight_g']),
+                createData('에너지(kcal)', response.data['calorie_kcal']),
+                createData('탄수화물(g)', response.data['Carbohydrate_g']),
+                createData('당류(g)', response.data['sugars_g']),
+                createData('지방(g)', response.data['fat_g']),
+                createData('단백질(g)', response.data['protein_g']),
+                createData('칼슘(mg)', response.data['calcium_mg']),
+                createData('인(mg)', response.data['phosphorus_mg']),
+                createData('나트륨(mg)', response.data['sodium_mg']),
+                createData('칼륨(mg)', response.data['potassium_mg']),
+                createData('마그네슘(mg)', response.data['magnesium_mg']),
+                createData('철(mg)', response.data['iron_mg']),
+                createData('아연(mg)', response.data['zinc_mg']),
+                createData('콜레스테롤(mg)', response.data['cholesterol_mg']),
+                createData('트랜스지방(g)', response.data['transFat_g']),
             ]
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
         })
@@ -129,12 +158,17 @@ function Upload(props) {
     const steps = [
         {
           label: '음식 사진을 업로드해주세요.',
-          content: <div><form>
+          content: <div><form id='foodUploadForm'>
                         <IconButton color="primary" aria-label="upload picture" component="label">
                             <input id='photo' hidden type="file" name="image" onChange={setImage} />
                             <PhotoCamera />
                         </IconButton>
-                        <div id="image_container"></div><br /><br /><br />
+                        <div id="image_container"></div><br />
+
+                        <Box sx={{ display: loadingIcon}}>
+                            <CircularProgress />
+                        </Box><br />
+
                         <Button variant="contained" component="label" disabled={!selectImg}>
                             예측하기
                             <button hidden type="button" onClick={sendData}></button>

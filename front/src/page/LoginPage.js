@@ -14,6 +14,13 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
+const REST_API_KEY_kakao = "aa6241f0d2d67478a59c2498796a248c";
+// const Testing_URI = "http://localhost:3000"; //http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080
+const REDIRECT_URI_kakao = "http://localhost:3000/logininfo";
+const KaKao_Rest_API = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY_kakao}&redirect_uri=${REDIRECT_URI_kakao}&response_type=code`;
 
 function LoginPage(props) {
   const [email, setEmail] = useState('');
@@ -21,6 +28,21 @@ function LoginPage(props) {
     password: '',
     showPassword: false,
   });
+  const [signup, setSignup] = useState(false);
+
+  const handleClick = () => {
+    setEmail('');
+    setValues({...values, password: '' })
+    setSignup(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSignup(false);
+  };
 
   const changeEmail = (event) => {
     setEmail(event.target.value);
@@ -40,12 +62,6 @@ function LoginPage(props) {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-
-  const loginClick = () => {
-    console.log(email);
-    console.log(values.password);
-    props.loginHangler(true);
-  }
 
   return (
     <div className="LoginPage">
@@ -77,21 +93,30 @@ function LoginPage(props) {
               label="Password"
             />
           </FormControl>
-          <Button id='loginButton' variant="contained" sx={{width: '80%'}} onClick={loginClick}>로그인</Button>
+          <Button id='loginButton' variant="contained" sx={{width: '80%'}} onClick={handleClick}>로그인</Button>
           <br /><br />
           <hr />
           <br />
           <div>
-            <img className='snsLogin' src={Naver} alt='naver'/>
-            <img className='snsLogin' src={Kakao} alt='kakao'/>
+            <img className="snsLogin" src={Naver} alt="naver" />
+            <a href={KaKao_Rest_API}>
+              <img className="snsLogin" src={Kakao} alt="kakao" />
+            </a>
           </div>
           <br />
         </div>
       </div>
       <div className='login' id='sign'>
         계정이 없으신가요?
-        <Link href="http://ec2-43-200-55-101.ap-northeast-2.compute.amazonaws.com:8080/auth/signup" underline="none">{' 가입하기'}</Link>
+        <Button onClick={handleClick}>
+          <Link underline="none">{' 가입하기'}</Link>
+        </Button>
       </div>
+      <Snackbar open={signup} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="info" sx={{ width: '100%' }}>
+          네이버 또는 카카오로 로그인해주세요.
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
