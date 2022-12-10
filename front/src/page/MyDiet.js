@@ -7,6 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import MyDietDetail from './MyDietDetail';
 
 function MyDiet(props) {
     return (
@@ -22,11 +23,7 @@ function MyDiet(props) {
                 </TableHead>
                 <TableBody>
                 {props.data.map((item) => (
-                    <TableRow key={item.date}>
-                        <TableCell align="center">{item.date.slice(0,10)}</TableCell>
-                        <TableCell align="center">{item.calorieSum}</TableCell>
-                        <TableCell align="center">{item.calorieSum > props.calorie_goal ? "초과" : (item.calorieSum < props.calorie_goal ? "미달" : "성공")}</TableCell>
-                    </TableRow>
+                    <MyDietDetail key={item.date} data={item} calorie_goal={props.calorie_goal}/>
                 ))}
                 </TableBody>
             </Table>

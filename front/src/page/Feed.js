@@ -1,5 +1,5 @@
 import './Feed.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -46,6 +46,7 @@ function Feed(props) {
   const [open, setOpen] = React.useState(false);
   const [openCommentDeleteOK, setOpenCommentDeleteOK] = React.useState(false);
   const [openCommentDeleteNO, setOpenCommentDeleteNO] = React.useState(false);
+  const [feedDate, setDate] = useState('');
 
   const handleClick = () => {
     setOpen(true);
@@ -114,6 +115,12 @@ function Feed(props) {
     })
   }
 
+  useEffect(() => {
+    let date = new Date(props.feedData.createdDate);
+    date.setHours(date.getHours() + 9);
+    setDate(date);
+  }, [props.feedData.createdDate])
+
   return (
     <Card className='Feed' sx={{ maxWidth: 500, marginTop: 2 }}>
       <CardHeader
@@ -138,7 +145,7 @@ function Feed(props) {
       <CardContent>
         <Typography id='like' variant="body2" color="text.secondary">
           <b>{props.feedData.content}</b><br/><br/>
-          22/11/11 10:30:17
+          {feedDate.toLocaleString()}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>

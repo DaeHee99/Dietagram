@@ -75,6 +75,7 @@ function MyPostDetail(props) {
     const [openCommentDeleteOK, setOpenCommentDeleteOK] = React.useState(false);
     const [openCommentDeleteNO, setOpenCommentDeleteNO] = React.useState(false);
     const [openComment, setOpenComment] = React.useState(false);
+    const [feedDate, setDate] = React.useState(new Date(props.item.createdDate));
 
 
     const handleClickOpen = () => {
@@ -159,6 +160,11 @@ function MyPostDetail(props) {
         });
     };
 
+    React.useEffect(() => {
+        let date = new Date(props.item.createdDate);
+        date.setHours(date.getHours() + 9);
+        setDate(date);
+    }, [props.item.createdDate])
 
     return (
         <div key={props.item.id} className='post'>
@@ -180,6 +186,7 @@ function MyPostDetail(props) {
                     </span>
                     <span style={{width: '100%', textAlign: 'center', display: 'block'}}>
                         {props.item.content}<br /><br />
+                        <b>{`작성 시간 : ${feedDate.toLocaleString()}`}</b><br /><hr />
 
                         <CardContent sx={{width: '70%', margin: '0 auto'}}>
                         {
