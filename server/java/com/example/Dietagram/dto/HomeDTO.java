@@ -15,6 +15,6 @@ public class HomeDTO {
 
     String token;
     String nickname;
-    List<Feed> feedList;
+//    List<Feed> feedList;
 
 }

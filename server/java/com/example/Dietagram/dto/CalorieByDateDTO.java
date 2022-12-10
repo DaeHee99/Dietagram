@@ -14,11 +14,11 @@ import java.time.format.DateTimeFormatter;
 @Setter
 @Builder
 public class CalorieByDateDTO {
-    public Long calorieSum;
+    public Double calorieSum;
     public LocalDateTime date;
 
     public static CalorieByDateDTO createDTO(Feed feed){
-        return CalorieByDateDTO.builder().calorieSum(Long.parseLong(feed.getFeedFeedImage().getCalorie_kcal()))
+        return CalorieByDateDTO.builder().calorieSum(Double.parseDouble(feed.getFeedFeedImage().getCalorie_kcal()))
                 .date(feed.createdDate).build();
     }
 

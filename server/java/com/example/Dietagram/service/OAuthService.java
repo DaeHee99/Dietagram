@@ -4,6 +4,7 @@ package com.example.Dietagram.service;
 import com.example.Dietagram.config.OAuthAttributes;
 import com.example.Dietagram.config.UserProfile;
 import com.example.Dietagram.domain.User;
+import com.example.Dietagram.dto.LoginDTO;
 import com.example.Dietagram.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,5 +86,22 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
         String id = tokenProvider.validateAndGetUserId(token);
         return userRepository.findById(Long.parseLong(id)).orElse(null);
     }
+
+    public User getUserByAttributeId(String attributeId){
+        return userRepository.findByAttributeId(attributeId);
+    }
+
+
+    public User createUserFromLoginDTO(LoginDTO loginDTO){
+        User newUser = User.builder().attributeId(loginDTO.getId())
+                .nickname(loginDTO.getNickname()+loginDTO.getId())
+                .build();
+        userRepository.save(newUser);
+
+        return userRepository.findByAttributeId(loginDTO.getId());
+    }
+
+
+
 }
 

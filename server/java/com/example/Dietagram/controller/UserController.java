@@ -4,6 +4,7 @@ package com.example.Dietagram.controller;
 import com.amazonaws.Response;
 import com.example.Dietagram.domain.User;
 import com.example.Dietagram.dto.CalorieByDateDTO;
+import com.example.Dietagram.dto.UserDTO;
 import com.example.Dietagram.dto.UserEditDTO;
 import com.example.Dietagram.dto.UserPrimeDTO;
 import com.example.Dietagram.service.FeedService;
@@ -32,10 +33,22 @@ public class UserController {
     @GetMapping("/mypage")
     public ResponseEntity<?> getUser(@RequestHeader String token){
         User userFromRepo = oAuthService.getUserByToken(token);
+
         if(userFromRepo == null){
             return ResponseEntity.badRequest().body("Cannot found user.");
         }
-        return ResponseEntity.ok().body(userFromRepo);
+
+//        feedService.getMyResponseFeedDTOList(userFromRepo); // userdto
+
+        UserDTO userDTO = UserDTO.builder().id(userFromRepo.getId())
+                .attributeId(userFromRepo.getAttributeId()).nickname(userFromRepo.getNickname())
+                .calorie_goal(userFromRepo.getCalorie_goal()).token(userFromRepo.getToken())
+                .weight(userFromRepo.getWeight()).height(userFromRepo.getHeight())
+                .followerList(userFromRepo.getFollowerList()).followingList(userFromRepo.getFollowingList())
+                .responseFeedDTO(feedService.getMyResponseFeedDTOList(userFromRepo))
+                .build();
+
+        return ResponseEntity.ok().body(userDTO);
     }
 
     @GetMapping("/mypage/edit")
@@ -44,7 +57,7 @@ public class UserController {
         if(userFromRepo == null){
             return ResponseEntity.badRequest().body("Cannot found user.");
         }
-        return ResponseEntity.ok().body(userFromRepo);
+        return ResponseEntity.ok().body("not use.");
     }
 
 
@@ -56,7 +69,7 @@ public class UserController {
             return ResponseEntity.badRequest().body("Cannot found user.");
         }
         userService.editMyPage(userEditDTO, userFromRepo);
-        return ResponseEntity.ok().body(userFromRepo);
+        return ResponseEntity.ok().body("edit succeed.");
     }
 
     @GetMapping("/mypage/following")
@@ -78,6 +91,7 @@ public class UserController {
         List<UserPrimeDTO> userPrimeDTOList = userService.getFollowerList(userFromRepo);
         return ResponseEntity.ok().body(userPrimeDTOList);
     }
+
 
 
     @GetMapping("/userpage/{id}")
@@ -121,9 +135,6 @@ public class UserController {
 
         List<CalorieByDateDTO> calorieByDateDTOList = feedService.getAllCalorieByDate(userFromRepo);
 
-        // 유저의 Feed 정보를 받아서 ,, 피드의 데이트 정보를 받아서
-        // 데이트 별로 리스트에 묶는다 SERvice
-        // 리턴
         return ResponseEntity.ok().body(calorieByDateDTOList);
     }
 
